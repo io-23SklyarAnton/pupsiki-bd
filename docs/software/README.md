@@ -966,30 +966,34 @@ if __name__ == "__main__":
 _app.py_
 
 ```python
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Form
 from sqlalchemy.orm import Session, sessionmaker
 from pydantic import BaseModel
 from typing import List
 from db import *
 
-engine = create_engine('postgresql://pupsiki:pupsiki@localhost:5432/pupsiki')
+DATABASE_URL = "postgresql://pupsiki:pupsiki@localhost:5432/pupsiki"
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+Base.metadata.create_all(bind=engine)
+
 
 class ProjectCreate(BaseModel):
-    name: str
+    id: int
+    title: str
+    status: str
     description: str
 
 
 class ProjectUpdate(BaseModel):
-    name: str = None
+    title: str = None
+    status: str = None
     description: str = None
 
 
 app = FastAPI()
-
-Base.metadata.create_all(bind=engine)
 
 
 def get_db():
@@ -1006,7 +1010,14 @@ async def read_root():
 
 
 @app.post("/project", response_model=ProjectCreate)
-async def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
+async def create_project(
+        id: int = Form(...),
+        title: str = Form(...),
+        status: str = Form(...),
+        description: str = Form(...),
+        db: Session = Depends(get_db)
+):
+    project = ProjectCreate(id=id, title=title, status=status, description=description)
     db_project = Project(**project.dict())
     db.add(db_project)
     db.commit()
@@ -1029,12 +1040,19 @@ async def read_project(project_id: int, db: Session = Depends(get_db)):
 
 
 @app.patch("/project/{project_id}", response_model=ProjectCreate)
-async def update_project(project_id: int, project: ProjectUpdate, db: Session = Depends(get_db)):
+async def update_project(
+        project_id: int,
+        title: str = Form(None),
+        status: str = Form(None),
+        description: str = Form(None),
+        db: Session = Depends(get_db)
+):
     db_project = db.query(Project).filter(Project.id == project_id).first()
     if db_project is None:
         raise HTTPException(status_code=404, detail="Record not found")
 
-    for key, value in project.dict(exclude_unset=True).items():
+    update_data = ProjectUpdate(title=title, status=status, description=description).dict(exclude_unset=True)
+    for key, value in update_data.items():
         setattr(db_project, key, value)
 
     db.commit()
