@@ -6,21 +6,21 @@
 ![Запуск серверу](./runserver.png)
 
 ## Додавання проекту в базу даних
-![Додавання проекту в базу даних](./add project.png)
+![Додавання проекту в базу даних](./add_project.png)
 
 ## Отримання всіх проектів
-![Отримання всіх проектів](./get all projects.png)
+![Отримання всіх проектів](./get_all_projects.png)
 
 ## Отримання проекту по id
-![Отримання проекту по id](./get project by id.png)
+![Отримання проекту по id](./get_project_by_id.png)
 
 ## Видалення проекту по id
-![Видалення проекту по id](./delete project by id.png)
-![Результат видалення проекту по id](./delete project by id result.png)
+![Видалення проекту по id](./delete_project_by_id.png)
+![Результат видалення проекту по id](./delete_project_by_id_result.png)
 
 ## Оновлення проекту по id
-![Оновлення проекту по id](./update project by id.png)
-![Результат оновлення проекту по id](./update project by id result.png)
+![Оновлення проекту по id](./update_project_by_id.png)
+![Результат оновлення проекту по id](./update_project_by_id_result.png)
 
 ## Скріншоти з бази даних
 ![Скріншот з бази даних](./database.png)
